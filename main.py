@@ -117,7 +117,7 @@ class Homepage():
     def year(self):
         self.parameter = "Year"
     def Duration(self):
-        self.parameter = "Duratiom"
+        self.parameter = "Duration"
     def Genre(self):
         self.parameter = "Genre"
 
