@@ -1,7 +1,4 @@
-
-
-
-from priority_queue import PriorityQueue
+from priorityQueue import PriorityQueue
 
 
 class Node:
@@ -112,11 +109,11 @@ class CartesianTree:
 
 
 
-# tree = CartesianTree()
-# tree.addNode(5)
-# tree.addNode(7)
-# tree.addNode(3)
-# tree.addNode(13)
-# tree.addNode(4)
-# print(tree.getRoot())
-# tree.inorderTraversal(tree.getRoot())
+tree = CartesianTree()
+tree.addNode(5)
+tree.addNode(7)
+tree.addNode(3)
+tree.addNode(13)
+tree.addNode(4)
+print(tree.getRoot())
+tree.inorderTraversal(tree.getRoot())
