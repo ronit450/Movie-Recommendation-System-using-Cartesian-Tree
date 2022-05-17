@@ -5,8 +5,8 @@ from tkinter import ttk
 from PIL import ImageTk, Image
 import tkinter as tk
 from tkinter.ttk import Combobox
-# from tkSliderWidget import Slider
-from RangeSlider.RangeSlider import RangeSliderH
+from application import Application
+from prettytable import PrettyTable
 
 class Login():
     def  __init__(self, main_root):
@@ -59,7 +59,7 @@ class Homepage():
         self.homepage = homepage
         self.max = True
         self.top = 45
-        self.parameter = "Name"
+        self.parameter = "Film Name"
         self.main_image = ImageTk.PhotoImage (Image.open (
             self.AbsolutePath('pictures_used/finalhomepage.png')))
         temp_label = Label (self.homepage,
@@ -69,22 +69,36 @@ class Homepage():
         self.select_order_of_data()
         self.selct_range_of_data()
         self.proceed_button()
+
+
+
+    def proceed_button(self):
         proceed_button = Button (self.homepage,
                                  text="Proceed",
                                  fg='black',
                                  height=2,
                                  width=35,
-                                 command=lambda: self.proceed_button(),
+                                 command= self.shifting_to_movie_data,
                                  bg='light green')
         proceed_button.place(x = 400, y = 600)
-
-
-    def proceed_button(self):
         max_or_min = self.max
         top_range = self.top
-        print(top_range)
-        print(max_or_min)
-        print(self.parameter)
+        parameter = self.parameter
+        print(parameter, max_or_min, top_range)
+        # self.shifting_to_movie_data()
+
+
+    def shifting_to_movie_data(self):
+        results = Toplevel ()
+        results.title ('HU Movie Akinator')
+        results.geometry ("1366x720")
+        results.config (bg='#1C1C1C')
+        movie_obj = Movie_Data (results,
+                                self.parameter,
+                                self.top,
+                                self.max)
+        results.mainloop ()
+
 
 
 
@@ -96,34 +110,58 @@ class Homepage():
     def asking_parameter (self):
         value = self.genre_selctor ()
         # self.imdb_slider ()
+    def name(self):
+        self.parameter = "Film Name"
+    def imdb(self):
+        self.parameter = "Rating"
+    def year(self):
+        self.parameter = "Year"
+    def Duration(self):
+        self.parameter = "Duratiom"
+    def Genre(self):
+        self.parameter = "Genre"
 
     def genre_selctor (self):
-        combostyle = ttk.Style ()
-        combostyle.theme_create ('combostyle',parent='alt',settings={'TCombobox':{'configure':{'fieldbackground': '#292B37',}}})
-
-        combostyle.theme_use ('combostyle')
-        self.current_table = tk.StringVar ()
         self.myframe1 = Frame (self.homepage, padx= 40, pady = 10,bg='#151718', borderwidth=0)
         self.myframe1.place (x=40,y=200)
         menue_items = [('Name'),('Genre'), ('IMDB Rating'), ('Year'), ('Duration')]
-        self.lbl = Label (self.myframe1,
-                          text="Select the Range of Data",
-                          fg='Black',
-                          font=("Helvetica", 14))
+        self.lbl = Label (self.myframe1,text="Select the Category",fg='Black',font=("Helvetica", 14))
         self.lbl.grid(padx = 10, pady = 10)
-        self.var = StringVar ()
-        self.var.set ("All")
-        self.cb = Combobox (self.myframe1,values=menue_items)
-        self.cb.bind ("<<ComboboxSelected>>",self.parameter_combo)
-        self.cb.grid()
+        self.v0 = IntVar ()
+        self.v0.set (1)
+        self.r1 = Radiobutton (self.myframe1,
+                               text="Name",
+                               variable=self.v0,
+                               value=1,
+                               command=self.name)
+        self.r2 = Radiobutton (self.myframe1,
+                               text="Genre",
+                               variable=self.v0,
+                               value=2,
+                               command=self.Genre)
+        self.r3 = Radiobutton (self.myframe1,
+                               text="ImDB Rating",
+                               variable=self.v0,
+                               value=3,
+                               command=self.imdb)
+        self.r4 = Radiobutton (self.myframe1,
+                               text="Year",
+                               variable=self.v0,
+                               value=4,
+                               command=self.year)
+        self.r5 = Radiobutton (self.myframe1,
+                               text="Duration",
+                               variable=self.v0,
+                               value=5,
+                               command=self.Duration)
+        self.r1.grid()
+        self.r2.grid()
+        self.r3.grid()
+        self.r4.grid()
+        self.r5.grid()
 
-        btn = Button(self.myframe1,
-                          text="Get the Parameters")
-        btn.grid(padx = 50, pady = 10)
 
-        choice = self.current_table.get()
-    def parameter_combo(self,x):
-        self.parameter = self.cb.get()
+
 
 
     def maxtomin(self):
@@ -175,6 +213,34 @@ class Homepage():
                            width='40')
         # myslider2.set(34)
         myslider2.grid ()
+
+class Movie_Data():
+    def __init__(self, third_window, parameter, top_range, max_or_min):
+        self.third_window = third_window
+        application_obj = Application(parameter, max_or_min, top_range)
+        self.movie_lst = application_obj.data_processing()
+        self.displaying_movie_data()
+    def displaying_movie_data(self):
+        table = PrettyTable ()
+        movie_data_frame = Frame (self.third_window,
+                                    bg='#1C1C1C')
+        movie_data_frame.grid ()
+        label = Text (movie_data_frame,
+                      bg='#1C1C1C',
+                      fg='white',
+                      height=50,
+                      width=100,
+                      borderwidth=0)
+        label.config (font=("Courier", 15))
+        table.field_names = ["Name", "Year", "Duration", "Genre", "Rating"]
+        for i in range (len (self.movie_lst)):
+            table.add_rows ([self.movie_lst[i]], )
+        label.insert (INSERT,
+                      table)
+        label.config (state=DISABLED)
+        label.grid (padx=200,
+                    pady=10,
+                    sticky=E + W)
 
 
 main_root = Tk()
