@@ -1,11 +1,12 @@
 
 
 
-from priority_queue import PriorityQueue
+from xmlrpc.client import boolean
+from priorityQueue import PriorityQueue
 
 class Node:
 
-    def __init__(self, film = None, genre = None, LeadStudio = None, imbd = None, year = None) -> None:
+    def __init__(self, film = None, year = None, genre = None, duration = None,rating = None) -> None:
         '''Constructor for the node class. 
 
         Value is initialized with 0, however, it will be set to the value that 
@@ -23,9 +24,10 @@ class Node:
         self.right = None
         self.parent = None
         self.filmName = film
+        self.year = year
+        self.duration = duration
         self.genre = genre
-        self.LeadStudio = LeadStudio
-        self.Imbd = imbd
+        self.rating = rating
 
 
 class CartesianTree:
@@ -43,7 +45,7 @@ class CartesianTree:
         self.root = node
         self.last = node
 
-    def findMaxNode(self, node:Node, value):
+    def findMaxNode(self, node:Node, value, is_numeric_field: bool):
         '''Finds maximum node in the tree. 
 
         Args:
@@ -53,11 +55,15 @@ class CartesianTree:
         Returns:
         Node
         '''
-        if float(node.value) > float(value):
-            return node
+        if is_numeric_field:
+            if float(node.value) > float(value):
+                return node
+        if not is_numeric_field:
+            if (node.value) > (value):
+                return node
         
         elif (node.parent != None):
-            return self.findLowestNode(node.parent, value)
+            return self.findMaxNode(node.parent, value, is_numeric_field)
         
         return None 
 
@@ -83,6 +89,10 @@ class CartesianTree:
         Returns:
         None
         '''
+        self.is_numeric_field = False
+        if index in (1,2,4):
+            self.is_numeric_field = True
+        
         newNode = Node(row[0],row[1],row[2],row[3],row[4])
         newNode.value = row[index]
         
@@ -91,7 +101,7 @@ class CartesianTree:
             self.last = newNode
             return 
      
-        max_Node = self.findMaxNode(self.last,row[index])
+        max_Node = self.findMaxNode(self.last,row[index], self.is_numeric_field)
 
         if (max_Node == None):
             newNode.left = self.root
@@ -132,7 +142,7 @@ class CartesianTree:
         Returns:
         None
         '''        
-        pq = PriorityQueue()
+        pq = PriorityQueue(self.is_numeric_field)
         sortedList = []
         tempNode = Node()
         pq.insert(self.root)

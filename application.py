@@ -3,9 +3,9 @@
 from read_data import ReadData
 from cartesian_tree import CartesianTree
 
-col_names = ["Film", "Genre", "Lead Studio", "IMDB", "Year"]
+col_names = ["Name", "Year", "Duration", "Genre", "Rating"]
 
-data_collection = ReadData("movies.csv")
+data_collection = ReadData("movie_data_set.csv")
 movie_data = data_collection.read()
 
 index = 0
@@ -14,9 +14,14 @@ for i in movie_data:
     if index == 0:
         index = 1
         continue
-    movie_tree.addNode(i,3)
+    movie_tree.addNode(i,4)
 
-a = movie_tree.priorityQueue_Sorting(False, 5)
+a = movie_tree.priorityQueue_Sorting(True, 10)
+
 for i in a:
-    print(i.filmName, i.genre, i.LeadStudio, i.Imbd, sep = ", ")
-
+    print("Name: ", i.filmName)
+    print("Year: ", i.year)
+    print("Genre: ", i.genre)
+    print("Duration: ",i.duration)
+    print("Rating: ", i.rating)
+    print("--------- New Movie ----------")
