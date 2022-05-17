@@ -1,50 +1,113 @@
-from priorityQueue import PriorityQueue
 
+
+
+from xmlrpc.client import boolean
+from priorityQueue import PriorityQueue
 
 class Node:
 
-    def __init__(self, value = 0, film = None, genre = None, LeadStudio = None, audienceScore = None,  ) -> None:
-        self.value = value
+    def __init__(self, film = None, year = None, genre = None, duration = None,rating = None) -> None:
+        '''Constructor for the node class. 
+
+        Value is initialized with 0, however, it will be set to the value that 
+        will be sorted.
+
+        Args:
+        - self: mandatory reference to this object.
+        - elements: the node is populated with these elements.
+
+        Returns:
+        None
+        '''
+        self.value = 0
         self.left = None
         self.right = None
         self.parent = None
-        self.filmName = None
-        self.genre = None
-        self.LeadStudio = LeadStudio
-        self.audienceScore = audienceScore
+        self.filmName = film
+        self.year = year
+        self.duration = duration
+        self.genre = genre
+        self.rating = rating
 
 
 class CartesianTree:
 
     def __init__(self, node = Node()) -> None:
+        '''Constructor for the Cartesian Tree class. 
+
+        Args:
+        - self: mandatory reference to this object.
+        - elements: a empty node is set to root node. 
+
+        Returns:
+        None
+        '''
         self.root = node
         self.last = node
 
-    def findLowestNode(self,node:Node,value:int):
-        if float(node.value) < float(value):
-            return node
+    def findMaxNode(self, node:Node, value, is_numeric_field: bool):
+        '''Finds maximum node in the tree. 
+
+        Args:
+        - self: mandatory reference to this object.
+        - elements: last node in the tree, value to compare.
+
+        Returns:
+        Node
+        '''
+        if is_numeric_field:
+            if float(node.value) > float(value):
+                return node
+        if not is_numeric_field:
+            if (node.value) > (value):
+                return node
+        
         elif (node.parent != None):
-            return self.findLowestNode(node.parent, value)
+            return self.findMaxNode(node.parent, value, is_numeric_field)
+        
         return None 
 
-    def getRoot(self):
+    def getRoot(self) -> Node:
+        '''Output the root node. 
+
+        Args:
+        - self: mandatory reference to this object.
+        - elements: -
+
+        Returns:
+        Root Node.
+        '''
         return self.root 
 
-    def addNode(self,value):
+    def addNode(self,row, index):
+        '''Adds new node to the cartesian tree. 
+
+        Args:
+        - self: mandatory reference to this object.
+        - elements: row :(movies attribute), index: (refers to column number)
         
-        newNode = Node(value)
+        Returns:
+        None
+        '''
+        self.is_numeric_field = False
+        if index in (1,2,4):
+            self.is_numeric_field = True
+        
+        newNode = Node(row[0],row[1],row[2],row[3],row[4])
+        newNode.value = row[index]
         
         if self.root.value == 0:
             self.root = newNode
             self.last = newNode
             return 
      
-        max_Node = self.findLowestNode(self.last,value)
+        max_Node = self.findMaxNode(self.last,row[index], self.is_numeric_field)
 
         if (max_Node == None):
             newNode.left = self.root
             self.root.parent = newNode
             self.root = newNode
+        
         else:
             newNode.left = max_Node.right
             max_Node.right = newNode
@@ -53,55 +116,51 @@ class CartesianTree:
         self.last = newNode
 
     def inorderTraversal(self,currentNode:Node):
-        
+        '''Perform Inorder Traversal on the tree. 
+
+        Args:
+        - self: mandatory reference to this object.
+        - elements: currentNode from which traversal begins.
+
+        Returns:
+        None
+        '''
         if (currentNode == None):
             return 
         self.inorderTraversal(currentNode.left)
         print(currentNode.value, end = " ")
         self.inorderTraversal(currentNode.right)
 
-    def deleteNode(self):
-        pass
-
-    #def find_max_node(self, node:Node, value):
-#
-    #    if node.value > value:
-    #        return node
-    #    elif node.parent != None:
-    #        return self.find_max_node(node.parent,value)
-    #    else:
-    #        return None
-        
-    # def printNode(self):
-    #     currNode = self.root
-    #     #while (currNode.right != None):
-    #     #    print(currNode.value)
-    #     #    currNode = currNode.right
-    #     #currNode = self.root
-    #     while (currNode.left != None):
-    #         print(currNode.value)
-    #         currNode = currNode.left 
-    #     while (currNode != None):
-    #         print(currNode.value)
-    #         currNode = currNode.right
 
     def priorityQueue_Sorting(self, is_max, top):
-        
-        pq = PriorityQueue()
+        '''Creates Priority Queue from the values in the tree.
+
+        Args:
+        - self: mandatory reference to this object.
+        - elements: is_max : (tells ascending or descending order), top :(range of results)
+
+        Returns:
+        None
+        '''        
+        pq = PriorityQueue(self.is_numeric_field)
         sortedList = []
         tempNode = Node()
         pq.insert(self.root)
+        
         while not pq.isEmpty():
             tempNode = pq.delete()
             sortedList.append(tempNode)
+            
             if tempNode.left != None:
                 pq.insert(tempNode.left)
+            
             if tempNode.right != None:
                 pq.insert(tempNode.right)
 
         if is_max == False:
             sortedList = sortedList[::-1]
         sub_sortedList = []
+        
         for i in range(top):
             sub_sortedList.append(sortedList[i])
         return sub_sortedList
@@ -109,11 +168,11 @@ class CartesianTree:
 
 
 
-tree = CartesianTree()
-tree.addNode(5)
-tree.addNode(7)
-tree.addNode(3)
-tree.addNode(13)
-tree.addNode(4)
-print(tree.getRoot())
-tree.inorderTraversal(tree.getRoot())
+# tree = CartesianTree()
+# tree.addNode(5)
+# tree.addNode(7)
+# tree.addNode(3)
+# tree.addNode(13)
+# tree.addNode(4)
+# print(tree.getRoot())
+# tree.inorderTraversal(tree.getRoot())
