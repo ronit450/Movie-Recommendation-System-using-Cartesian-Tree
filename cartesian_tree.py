@@ -1,17 +1,20 @@
-from priorityQueue import PriorityQueue
+
+
+
+from priority_queue import PriorityQueue
 
 
 class Node:
 
-    def __init__(self, value = 0, film = None, genre = None, LeadStudio = None, audienceScore = None,  ) -> None:
-        self.value = value
+    def __init__(self, film = None, genre = None, LeadStudio = None, imbd = None, year = None) -> None:
+        self.value = 0
         self.left = None
         self.right = None
         self.parent = None
-        self.filmName = None
-        self.genre = None
+        self.filmName = film
+        self.genre = genre
         self.LeadStudio = LeadStudio
-        self.audienceScore = audienceScore
+        self.Imbd = imbd
 
 
 class CartesianTree:
@@ -20,8 +23,8 @@ class CartesianTree:
         self.root = node
         self.last = node
 
-    def findLowestNode(self,node:Node,value:int):
-        if float(node.value) < float(value):
+    def findLowestNode(self, node:Node, value):
+        if float(node.value) > float(value):
             return node
         elif (node.parent != None):
             return self.findLowestNode(node.parent, value)
@@ -30,16 +33,17 @@ class CartesianTree:
     def getRoot(self):
         return self.root 
 
-    def addNode(self,value):
+    def addNode(self,row, index):
         
-        newNode = Node(value)
+        newNode = Node(row[0],row[1],row[2],row[3],row[4])
+        newNode.value = row[index]
         
         if self.root.value == 0:
             self.root = newNode
             self.last = newNode
             return 
      
-        max_Node = self.findLowestNode(self.last,value)
+        max_Node = self.findLowestNode(self.last,row[index])
 
         if (max_Node == None):
             newNode.left = self.root
@@ -72,19 +76,6 @@ class CartesianTree:
     #    else:
     #        return None
         
-    # def printNode(self):
-    #     currNode = self.root
-    #     #while (currNode.right != None):
-    #     #    print(currNode.value)
-    #     #    currNode = currNode.right
-    #     #currNode = self.root
-    #     while (currNode.left != None):
-    #         print(currNode.value)
-    #         currNode = currNode.left 
-    #     while (currNode != None):
-    #         print(currNode.value)
-    #         currNode = currNode.right
-
     def priorityQueue_Sorting(self, is_max, top):
         
         pq = PriorityQueue()
@@ -109,11 +100,11 @@ class CartesianTree:
 
 
 
-tree = CartesianTree()
-tree.addNode(5)
-tree.addNode(7)
-tree.addNode(3)
-tree.addNode(13)
-tree.addNode(4)
-print(tree.getRoot())
-tree.inorderTraversal(tree.getRoot())
+# tree = CartesianTree()
+# tree.addNode(5)
+# tree.addNode(7)
+# tree.addNode(3)
+# tree.addNode(13)
+# tree.addNode(4)
+# print(tree.getRoot())
+# tree.inorderTraversal(tree.getRoot())
