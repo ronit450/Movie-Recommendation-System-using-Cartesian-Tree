@@ -11,7 +11,7 @@ from prettytable import PrettyTable
 class Login():
     def  __init__(self, main_root):
         self.main_root = main_root
-
+        self.username = "m"
 
         self.main_image = ImageTk.PhotoImage (Image.open (
             self.AbsolutePath('pictures_used/loginpg_1366x720.png')))
@@ -23,9 +23,6 @@ class Login():
 
 
 
-        # text_for_password = Text(self.main_root, bg = "#292B37", width = 31, font="Verdana 18",  height = 2)
-        # # text_for_password.grid(padx = 40, pady = 430)
-        #
         Button (self.main_root,
                 text = "Login",
                 height=2,
@@ -33,10 +30,10 @@ class Login():
                 font=("Helvetica", 14),
                 bg='#B52840',
                 fg = 'white',
-                command = lambda: self.homepage(),
+                command =  self.homepage,
                 borderwidth=2).grid (padx = 850, pady = 550)
-
     def homepage(self):
+        print(self.username)
         homepage = Toplevel ()
         homepage.title ('HU Movie Akinator')
         homepage.geometry ("1366x720")
@@ -47,8 +44,10 @@ class Login():
     def login_username (self):
         self.login_frame = Frame(self.main_root,padx=0, pady = 0,bg='#B52840', borderwidth=0 )
         self.login_frame.place(x = 820, y = 290)
-        text_for_name = Text(self.login_frame, bg = "#B52840", width = 20, fg='white', font="Verdana 18",  height = 1)
+        text_for_name = Entry(self.login_frame, bg = "#B52840", width = 20, fg='white', font="Verdana 18")
         text_for_name.grid (padx=0,pady=0)
+
+
 
 
     def login_password(self):

@@ -33,6 +33,3 @@ class Application:
         return final_movie_lst
 
 
-program= Application("Year",True,5)
-a = program.data_processing()
-print(a)
